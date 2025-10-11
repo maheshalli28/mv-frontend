@@ -95,7 +95,7 @@ export const useRegisterCustomer = () => {
 
 
 // --- Legacy API Functions (for backward compatibility) ---
-export const getAllCustomers = () => API.get(`/customers/all`);
+export const getAllCustomers = () => API.get(`/api/customers/all`);
 export const searchCustomers = (q) => API.get(`/customers/search`, { params: { q } });
 export const filterCustomers = (params) => API.get(`/customers/filter`, { params });
 export const getCustomerProfileById = (id) => API.get(`/customers/${id}`);
