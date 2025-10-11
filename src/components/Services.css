@@ -1,0 +1,74 @@
+/* Services.css */
+
+#services {
+  background: #f9f9f9;
+}
+
+#services h1 {
+  color: #222;
+}
+
+#services h5 {
+  color: #666;
+}
+
+/* Card Styling */
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Image */
+.service-card img {
+  border-bottom: 4px solid #eee;
+  transition: transform 0.4s ease;
+}
+
+.service-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Title + Icon */
+.service-card h5 {
+  font-size: 1.2rem;
+  color: #222;
+}
+
+.service-card p {
+  margin-bottom: 0.25rem;
+}
+
+/* Bank & Interest Info */
+.service-card .fw-semibold {
+  color: #0d6efd !important; /* Bootstrap primary */
+}
+
+.service-card small {
+  font-weight: 500;
+}
+
+/* Description */
+.service-card p.text-secondary {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Show More / Less Button */
+.service-card button {
+  color: #f7f9fc !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.service-card button:hover {
+  color: #fafbfb !important;
+  text-decoration: none;
+  
+}

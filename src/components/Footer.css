@@ -1,0 +1,51 @@
+.footer {
+  background-color: #0B0C2A;
+  font-size: 15px;
+}
+
+.footer-title {
+  font-family: 'Lucida Handwriting', cursive;
+  font-size: 1.5rem;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.footer-title::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background-color: #ffc107;
+  margin-top: 5px;
+}
+
+.footer ul li a {
+  color: #fff;
+  text-decoration: none;
+  line-height: 2;
+}
+
+.footer ul li a:hover {
+  text-decoration: underline;
+  color: #ffc107;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.social-icon:hover {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: white;
+}

@@ -1,0 +1,30 @@
+/* Nav Links */
+.nav-links .nav-link {
+  margin: 0 0.6rem;
+  font-weight: 500;
+  color: #eae2e2 !important;
+  padding: 0.4rem 0.9rem;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+.nav-links .nav-link:hover {
+  background: #6b68a230;
+  color: #fff !important;
+}
+
+/* Active Section Highlight */
+.nav-links .nav-link.active {
+  background: #6977a075;
+  color: #fff !important; 
+  font-weight: 600;
+}
+
+/* Ensure collapse covers width on mobile */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background: #0B0C2A;
+    padding: 0.5rem 1rem;
+  }
+}

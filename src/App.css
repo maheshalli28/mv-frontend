@@ -1,0 +1,120 @@
+html {
+  scroll-behavior: smooth;
+  
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  background: #f9f9ff;
+}
+
+.navbar {
+  background:#0B0C2A;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links li a {
+  color: white;
+  text-decoration: none;
+}
+
+section {
+  padding: 0rem;
+  margin: 0rem;
+
+}
+
+
+/* Medium devices (tablets, 768px and up) */
+@media (max-width: 991.98px) {
+  section {
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  .card-body {
+    height: auto !important;
+  }
+
+  .card-img-top {
+    height: 180px !important;
+  }
+
+  h1, h2 {
+    font-size: 1.75rem;
+  }
+
+  h5 {
+    font-size: 1rem;
+  }
+}
+
+/* Small devices (phones, less than 768px) */
+@media (max-width: 767.98px) {
+  section {
+    height: auto;
+    margin: 0;
+    padding: 0rem;
+
+    
+  }
+
+  .card {
+    margin-bottom: 1.5rem;
+  }
+
+  .card-img-top {
+    height: 160px !important;
+  }
+
+  h1, h2 {
+    font-size: 1.5rem;
+  }
+
+  h5 {
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+}
+
+@media print {
+  /* Hide everything except the table section */
+  body * {
+    visibility: hidden;
+  }
+
+  .print-section, .print-section * {
+    visibility: visible;
+  }
+
+  /* Ensure the print section starts at the top */
+  .print-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  /* Hide the Action column */
+  .no-print {
+    display: none !important;
+  }
+}
