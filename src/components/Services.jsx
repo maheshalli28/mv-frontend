@@ -7,7 +7,7 @@ const servicesData = [
   {
     title: "Home Loan",
     bank: "MV Associates Partner Banks",
-    interest: "Starting from 8.5% p.a.",
+    interest: "Rates vary based on the policies of each bank.",
     description:
       "Affordable home loans with flexible EMI options. Ideal for first-time buyers or upgrading your dream house with trusted banking partners.",
     image: "/assets/image1.png",
@@ -16,7 +16,7 @@ const servicesData = [
   {
     title: "Mortgage Loan",
     bank: "MV Associates Finance Solutions",
-    interest: "Starting from 9.2% p.a.",
+    interest: "Rates vary based on the policies of each bank.",
     description:
       "Unlock the value of your gold instantly. Get hassle-free, secured loans with minimal documentation and same-day approval.",
     image: "/assets/image2.png",

@@ -86,7 +86,7 @@ function App() {
             <ProtectedRoute allowedRoles={["admin"]}>
               <PortfolioNavbar />
               <CustomerListPage />
-            </ProtectedRoute>
+           </ProtectedRoute>
           }
         />
         <Route

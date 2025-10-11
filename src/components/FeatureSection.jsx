@@ -7,6 +7,7 @@ import {
   BsCashCoin,
   BsLightningFill,
 } from "react-icons/bs";
+import { CiBank } from "react-icons/ci";
 
 const features = [
   {
@@ -15,7 +16,12 @@ const features = [
     description:
       "Get your loan application reviewed and approved in the shortest possible time.",
   },
-  
+  {
+    icon: <CiBank size={40} color="#ffc107" />,
+    title: "Bank Partnerships",
+    description:
+      "We help you get loans from any bank with complete transparency and ease.",
+  },
   {
     icon: <BsFileEarmarkTextFill size={40} color="#ffc107" />,
     title: "Minimal Documentation",
@@ -40,6 +46,7 @@ const features = [
     description:
       "We ensure your personal and financial details are always kept safe.",
   },
+  
 ];
 
 const FeaturesSection = () => {

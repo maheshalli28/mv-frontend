@@ -13,6 +13,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { TableSkeleton } from "../components/LoadingSkeleton";
 import { MdDeleteForever } from "react-icons/md";
 import "./CustomerListPage.css";
+import StatsPanel from "../pages/StatsPanel";
 
 
 const CustomerListPage = () => {
@@ -340,6 +341,7 @@ const CustomerListPage = () => {
 
       {/* Stats */}
       {showStats && stats && (
+        <>
           <div className="stats-container mb-4">
             {[
               { label: "Approved", value: stats.approvedCount, color: "#28a745" },
@@ -356,9 +358,11 @@ const CustomerListPage = () => {
                 <div className="stat-value" style={{ color: item.color }}>
                   {item.value}
                 </div>
-              </div>
+              </div>       
             ))}
           </div>
+          <StatsPanel stats={stats} />
+         </> 
         )}
 
 
