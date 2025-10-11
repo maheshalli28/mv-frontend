@@ -16,7 +16,7 @@ const MONTHS = [
   "July","August","September","October","November","December"
 ];
 
-const StatsPanel = ({ customers = [], overallStats = null, initialMonth, initialYear }) => {
+const StatsPanel = ({ customers = [], overallStats = [], initialMonth, initialYear }) => {
   const now = new Date();
   const defaultMonth = initialMonth || now.getMonth() + 1;
   const defaultYear = initialYear || now.getFullYear();
@@ -124,6 +124,22 @@ const StatsPanel = ({ customers = [], overallStats = null, initialMonth, initial
           )}
         </div>
       </div>
+
+      {overallStats && (
+        <div className="stats-container mb-0">
+          {[
+            { label: "Approved", value: overallStats.approvedCount, color: "#28a745" },
+            { label: "Pending", value: overallStats.pendingCount, color: "#ffc107" },
+            { label: "Rejected", value: overallStats.rejectedCount, color: "#dc3545" },
+            { label: "Total Loans", value: `₹${overallStats.totalLoanAmount.toLocaleString()}`, color: "#6f42c1" },
+          ].map((item, i) => (
+            <div key={i} className="stat-card">
+              <div className="stat-label">{item.label}</div>
+              <div className="stat-value" style={{ color: item.color }}>{item.value}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

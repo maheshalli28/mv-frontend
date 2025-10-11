@@ -13,7 +13,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { TableSkeleton } from "../components/LoadingSkeleton";
 import { MdDeleteForever } from "react-icons/md";
 import "./CustomerListPage.css";
-import StatsPanel from "../pages/StatsPanel";
+import StatsPanel from "./StatsPanel";
 
 
 const CustomerListPage = () => {
@@ -361,7 +361,7 @@ const CustomerListPage = () => {
               </div>       
             ))}
           </div>
-          <StatsPanel stats={stats} />
+          <StatsPanel customers={customers} overallStats={stats} />
          </> 
         )}
 
