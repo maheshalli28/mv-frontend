@@ -114,7 +114,7 @@ const StatsPanel = ({ customers = [], overallStats = [], initialMonth, initialYe
             ].map((item, i) => (
               <div key={i} className="stat-card">
                 <div className="d-flex flex-column align-items-center">
-                   <span className="stat-value" style={{ color: item.color }}>{item.label} : {item.value}</span>
+                   <span className="stat-value" >{item.label} :<span style={{ color: item.color }}>{item.value}</span></span>
                 </div>
                 
               </div>
@@ -124,22 +124,6 @@ const StatsPanel = ({ customers = [], overallStats = [], initialMonth, initialYe
           )}
         </div>
       </div>
-
-      {overallStats && (
-        <div className="stats-container mb-0">
-          {[
-            { label: "Approved", value: overallStats.approvedCount, color: "#28a745" },
-            { label: "Pending", value: overallStats.pendingCount, color: "#ffc107" },
-            { label: "Rejected", value: overallStats.rejectedCount, color: "#dc3545" },
-            { label: "Total Loans", value: `₹${overallStats.totalLoanAmount.toLocaleString()}`, color: "#6f42c1" },
-          ].map((item, i) => (
-            <div key={i} className="stat-card">
-              <div className="stat-label">{item.label}</div>
-              <div className="stat-value" style={{ color: item.color }}>{item.value}</div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
