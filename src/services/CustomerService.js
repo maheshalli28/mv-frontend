@@ -3,19 +3,19 @@ import API from "./api";
 
 // --- Raw API Functions ---
 const getAllCustomersAPI = (page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc') =>
-  API.get(`/customers/all?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`);
+  API.get(`/api/customers/all?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`);
 
-const searchCustomersAPI = (q) => API.get(`/customers/search`, { params: { q } });
+const searchCustomersAPI = (q) => API.get(`/api/customers/search`, { params: { q } });
 
-const filterCustomersAPI = (params) => API.get(`/customers/filter`, { params });
+const filterCustomersAPI = (params) => API.get(`/api/customers/filter`, { params });
 
-const updateCustomerAPI = (id, data) => API.put(`/customers/update/${id}`, data);
+const updateCustomerAPI = (id, data) => API.put(`/api/customers/update/${id}`, data);
 
-const registerCustomerAPI = (data) => API.post(`/customers/register`, data);
+const registerCustomerAPI = (data) => API.post(`/api/customers/register`, data);
 
-const deleteCustomerAPI = (id) => API.delete(`/customers/delete/${id}`);
+const deleteCustomerAPI = (id) => API.delete(`/api/customers/delete/${id}`);
 
-const getCustomerStatsAPI = () => API.get(`/customers/stats`);
+const getCustomerStatsAPI = () => API.get(`/api/customers/stats`);
 
 // --- React Query Hooks ---
 
@@ -96,12 +96,12 @@ export const useRegisterCustomer = () => {
 
 // --- Legacy API Functions (for backward compatibility) ---
 export const getAllCustomers = () => API.get(`/api/customers/all`);
-export const searchCustomers = (q) => API.get(`/customers/search`, { params: { q } });
-export const filterCustomers = (params) => API.get(`/customers/filter`, { params });
-export const getCustomerProfileById = (id) => API.get(`/customers/${id}`);
-export const updateCustomer = (id, data) => API.put(`/customers/update/${id}`, data);
+export const searchCustomers = (q) => API.get(`/api/customers/search`, { params: { q } });
+export const filterCustomers = (params) => API.get(`/api/customers/filter`, { params });
+export const getCustomerProfileById = (id) => API.get(`/api/customers/${id}`);
+export const updateCustomer = (id, data) => API.put(`/api/customers/update/${id}`, data);
 export const getCustomerProfile = (email, phone) =>
-  API.get(`/customers/profile`, { params: { email, phone } });
-export const registerCustomer = (data) => API.post(`/customers/register`, data);
-export const deleteCustomer = (id) => API.delete(`/customers/delete/${id}`);
-export const getCustomerStats = () => API.get(`/customers/stats`);
+  API.get(`/api/customers/profile`, { params: { email, phone } });
+export const registerCustomer = (data) => API.post(`/api/customers/register`, data);
+export const deleteCustomer = (id) => API.delete(`/api/customers/delete/${id}`);
+export const getCustomerStats = () => API.get(`/api/customers/stats`);
