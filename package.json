@@ -32,7 +32,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postbuild": "node scripts/generate-sitemap.js"
   },
   "eslintConfig": {
     "extends": [
@@ -54,6 +55,9 @@
   },
   "devDependencies": {
     "gh-pages": "^6.3.0"
+  },
+  "optionalDependencies": {
+    "react-helmet-async": "^2.3.0"
   },
   "proxy": "https://mv-backend-apz8.onrender.com"
 }
