@@ -57,7 +57,7 @@
     "gh-pages": "^6.3.0"
   },
   "optionalDependencies": {
-    "react-helmet-async": "^2.3.0"
+    
   },
   "proxy": "https://mv-backend-apz8.onrender.com"
 }

@@ -36,7 +36,7 @@ const Certifications = () => {
               style={{ width: "150px", height: "150px", margin: "auto" }}
             >
               <FaMoneyCheckAlt size={30} className="text-warning mb-2" />
-              <h4 className="fw-bold mb-0">50+</h4>
+              <h4 className="fw-bold mb-0">1000+</h4>
               <small>Loans</small>
             </div>
           </div>
@@ -46,7 +46,7 @@ const Certifications = () => {
               style={{ width: "150px", height: "150px", margin: "auto" }}
             >
               <FaUsers size={30} className="text-danger mb-2" />
-              <h4 className="fw-bold mb-0">50+</h4>
+              <h4 className="fw-bold mb-0">1000+</h4>
               <small>Clients</small>
             </div>
           </div>
