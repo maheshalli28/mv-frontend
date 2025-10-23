@@ -395,6 +395,8 @@ const CustomerListPage = () => {
                     <th>Date</th>
                     <th>Phone</th>
                     <th>Type</th>
+                    <th>IFSC Code</th>
+                    <th>Account No.</th>
                     <th>Bank</th>
                     <th>Amount</th>
                     <th>Status</th>
@@ -411,6 +413,8 @@ const CustomerListPage = () => {
                         <td>{c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "-"}</td>
                         <td>{c.phone}</td>
                         <td className="text-capitalize">{c.loantype}</td>
+                        <td>{c.ifsccode}</td>
+                        <td>{c.accountnumber}</td>
                         <td>{c.bankname}</td>
                         <td>₹ {c.loanamount?.toLocaleString()}</td>
                         <td>{renderStatusBadge(c.status)}</td>

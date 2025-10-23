@@ -92,11 +92,17 @@ const CustomerPage = () => {
               <FaPhoneAlt className="me-2" /> <span className="fw-bold">Phone:</span> {customer.phone}
             </div>
             <div className="mb-3">
-              <FaHome className="me-2" /> <span className="fw-bold">Address:</span> {customer.address}
-            </div>
-            <div className="mb-3">
               <FaUniversity className="me-2" /> <span className="fw-bold">Bank Name:</span> {customer.bankname}
             </div>
+
+            <div className="mb-3">
+              <FaHome className="me-2" /> <span className="fw-bold">Account Number:</span> {customer.accountnumber}
+            </div>
+
+            <div className="mb-3">
+              <FaHome className="me-2" /> <span className="fw-bold">IFSC Code:</span> {customer.ifsccode}
+            </div>
+
             <div className="mb-3">
               <FaFileInvoiceDollar className="me-2" /> <span className="fw-bold">Loan Type:</span> {customer.loantype}
             </div>
@@ -111,7 +117,7 @@ const CustomerPage = () => {
             </div>
             
             {/* Action Buttons */}
-            <div className="mt-4 d-flex justify-content-center">  
+            <div className="mt-4 d-flex justify-content-center">
               <button
                 className="btn btn-danger px-4 d-flex align-items-center"
                 style={{ borderRadius: 8 }}

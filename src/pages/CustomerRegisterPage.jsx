@@ -15,8 +15,9 @@ const CustomerRegisterPage = () => {
     dob: null,
     email: "",
     phone: "",
-    address: "",
     bankname: "",
+    accountnumber: "",
+    ifsccode: "",
     loantype: "",
     loanamount: "",
   });
@@ -46,8 +47,9 @@ const CustomerRegisterPage = () => {
         dob: null,
         email: "",
         phone: "",
-        address: "",
         bankname: "",
+        accountnumber: "",
+        ifsccode: "",
         loantype: "",
         loanamount: "",
       });
@@ -219,17 +221,6 @@ const CustomerRegisterPage = () => {
                 </select>
               </div>
 
-              <div className="col-12">
-                <label className="form-label">Address</label>
-                <textarea
-                  name="address"
-                  className="form-control"
-                  rows="2"
-                  value={form.address}
-                  onChange={handleChange}
-                />
-              </div>
-
               <div className="col-12 col-md-6">
                 <label className="form-label">
                   Bank Name <span className="text-danger">*</span>
@@ -258,6 +249,31 @@ const CustomerRegisterPage = () => {
                 </select>
               </div>
 
+              {/** Account Number */}
+              <div className="col-12 col-md-6">
+                <label className="form-label">Account Number</label>
+                <input
+                  type="number"
+                  name="accountnumber"
+                  className="form-control"
+                  value={form.accountnumber}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/** IFSC Code */}
+              <div className="col-12 col-md-6">
+                <label className="form-label">IFSC Code</label>
+                <input
+                  type="text"
+                  name="ifsccode"
+                  className="form-control"
+                  value={form.ifsccode}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/** Loan Amount */}
               <div className="col-12 col-md-6">
                 <label className="form-label">Loan Amount</label>
                 <input

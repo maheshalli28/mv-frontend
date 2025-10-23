@@ -206,6 +206,34 @@ const CustomerProfilePage = () => {
               </select>
             </div>
           </div>
+          {/* Account Number */}
+          <div className="row mb-3 align-items-center">
+            <label className="col-sm-4 col-form-label">Account Number</label>
+            <div className="col-sm-8">
+              <input
+                className="form-control"
+                type="number"
+                name="accountnumber"
+                value={form.accountnumber || ""}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          
+          {/* IFSC Code */}
+          <div className="row mb-3 align-items-center">
+            <label className="col-sm-4 col-form-label">IFSC Code</label>
+            <div className="col-sm-8">
+              <input
+                className="form-control"
+                type="text"
+                name="ifsccode"
+                value={form.ifsccode || ""}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
 
           {/* Loan Amount */}
           <div className="row mb-3 align-items-center">

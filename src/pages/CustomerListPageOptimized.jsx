@@ -246,6 +246,8 @@ const CustomerListPageOptimized = () => {
                       </th>
                       <th>Email</th>
                       <th>Phone</th>
+                      <th>IFSC Code</th>
+                      <th>Account No.</th>
                       <th>Loan Type</th>
                       <th onClick={() => handleSort("loanamount")} style={{ cursor: "pointer" }}>
                         Amount {sortBy === "loanamount" && (sortOrder === "asc" ? "↑" : "↓")}
@@ -264,6 +266,8 @@ const CustomerListPageOptimized = () => {
                         </td>
                         <td>{customer.email}</td>
                         <td>{customer.phone}</td>
+                        <td>{customer.ifsccode}</td>
+                        <td>{customer.accountnumber}</td>
                         <td>{customer.loantype}</td>
                         <td>₹{customer.loanamount?.toLocaleString()}</td>
                         <td>{renderStatusBadge(customer.status)}</td>
