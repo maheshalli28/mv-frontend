@@ -22,7 +22,7 @@ const Footer = () => {
           <div className="col-md-4">
             <h5 className="footer-title text-warning">Contact</h5>
             <p><FaMapMarkerAlt className="me-2" />Hyderabad, Telangana, India</p>
-            <p><FaPhoneAlt className="me-2" />+91 8247675651 </p>
+            <p><FaPhoneAlt className="me-2" />+91 7416344264 </p>
             <p><FaEnvelope className="me-2" />mvassociates.org@gmail.com</p>
             <div className="d-flex gap-3 mt-3">
               <a href="/home" className="social-icon"><FaTwitter /></a>
