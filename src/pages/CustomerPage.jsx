@@ -61,7 +61,7 @@ const CustomerPage = () => {
               borderRadius: 16,
               boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
               padding: "2rem 1.8rem",
-              
+
             }}
           >
             {/* Header */}
@@ -115,7 +115,18 @@ const CustomerPage = () => {
                 {customer.status}
               </span>
             </div>
-            
+
+            {/* Rejection Message - Only show when status is rejected */}
+            {customer.status === "rejected" && customer.rejectionMessage && (
+              <div className="alert alert-danger" role="alert" style={{ borderRadius: 8 }}>
+                <h6 className="alert-heading fw-bold mb-2">
+                  <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                  Rejection Reason
+                </h6>
+                <p className="mb-0">{customer.rejectionMessage}</p>
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="mt-4 d-flex justify-content-center">
               <button
