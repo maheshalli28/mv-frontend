@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { registerCustomer } from "../services/CustomerService";
+import { useRegisterCustomer } from "../services/CustomerService";
+import { getCurrentUser } from "../utils/auth";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 
-const CustomerRegisterPage = () => {
+const CustomerRegisterPage = ({ onClose }) => {
   const navigate = useNavigate();
+
+  const currentUser = getCurrentUser();
 
   const [form, setForm] = useState({
     firstname: "",
@@ -20,24 +23,25 @@ const CustomerRegisterPage = () => {
     ifsccode: "",
     loantype: "",
     loanamount: "",
+    password: "",
+    subAdminUsername: currentUser?.role === "sub-admin"
+      ? currentUser?.username
+      : "none"
   });
 
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("info");
-  const [loading, setLoading] = useState(false); // ✅ Loading state added
+  const registerMutation = useRegisterCustomer();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // ✅ Start loading
-    setMessage("");
-
     try {
       const payload = {
         ...form,
         dob: form.dob ? form.dob.toISOString().substring(0, 10) : "",
       };
 
-  await registerCustomer(payload);
+      await registerMutation.mutateAsync(payload);
 
       // Clear form only after success
       setForm({
@@ -52,13 +56,18 @@ const CustomerRegisterPage = () => {
         ifsccode: "",
         loantype: "",
         loanamount: "",
+        password: ""
       });
 
       setMessage("✅ Customer registered successfully!");
       setMessageType("success");
       setTimeout(() => {
         setMessage("");
-        navigate("/");
+        if (onClose) {
+          onClose();
+        } else {
+          navigate("/");
+        }
       }, 1500);
     } catch (err) {
       // Extract best available error message(s)
@@ -89,15 +98,19 @@ const CustomerRegisterPage = () => {
 
       setMessage(`❌ Registration failed: ${details}`);
       setMessageType("danger");
-    } finally {
-      setLoading(false); // ✅ Stop loading
     }
   };
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleClose = () => navigate("/");
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
     <section>
@@ -286,6 +299,32 @@ const CustomerRegisterPage = () => {
                 />
               </div>
 
+              {/** Password */}
+              <div className="col-12 col-md-6">
+                <label className="form-label">Create Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  className="form-control"
+                  placeholder="Min 6 characters"
+                  value={form.password}
+                  onChange={handleChange}
+                />
+                <div className="form-text small opacity-75">If left blank, your phone number will be your initial password.</div>
+              </div>
+
+              {/** Sub-Admin Username (Read-only) */}
+              <div className="col-12 col-md-6">
+                <label className="form-label">Sub-Admin Username</label>
+                <input
+                  type="text"
+                  name="subAdminUsername"
+                  className="form-control bg-light"
+                  value={form.subAdminUsername}
+                  readOnly
+                />
+              </div>
+
               {/* Buttons */}
               <div className="col-12 mt-4">
                 <div className="d-flex flex-column flex-md-row justify-content-center gap-2">
@@ -293,7 +332,7 @@ const CustomerRegisterPage = () => {
                     type="button"
                     className="btn btn-outline-secondary"
                     onClick={handleClose}
-                    disabled={loading}
+                    disabled={registerMutation.isPending}
                   >
                     Cancel
                   </button>
@@ -301,9 +340,9 @@ const CustomerRegisterPage = () => {
                   <button
                     type="submit"
                     className="btn btn-primary d-flex align-items-center justify-content-center"
-                    disabled={loading}
+                    disabled={registerMutation.isPending}
                   >
-                    {loading ? (
+                    {registerMutation.isPending ? (
                       <>
                         <span
                           className="spinner-border spinner-border-sm me-2"

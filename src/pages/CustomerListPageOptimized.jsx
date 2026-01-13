@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaSearch, FaFilter, FaEdit, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { FaSearch, FaFilter, FaEdit, FaChevronLeft, FaChevronRight, FaUserPlus, FaTimes, FaUserTie, FaTrash } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import {
   useCustomers,
@@ -9,8 +9,9 @@ import {
   useFilterCustomers,
   useDeleteCustomer,
 } from "../services/CustomerService";
-import { TableSkeleton, StatsSkeleton, ErrorMessage } from "../components/LoadingSkeleton";
+import { TableSkeleton, StatsSkeleton } from "../components/LoadingSkeleton";
 import { useDebounce } from "../hooks/useDebounce";
+import CustomerRegisterPage from "./CustomerRegisterPage";
 
 const statBoxStyle = {
   background: "#fff",
@@ -26,9 +27,12 @@ const CustomerListPageOptimized = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [showStats, setShowStats] = useState(false);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const subAdminIdParam = queryParams.get("subAdminId") || "";
 
   const [filters, setFilters] = useState({
     loantype: "",
@@ -37,18 +41,23 @@ const CustomerListPageOptimized = () => {
     status: "",
   });
 
+  const [showAddForm, setShowAddForm] = useState(false);
+
   const navigate = useNavigate();
   const debouncedSearch = useDebounce(search, 500);
   const isSearching = debouncedSearch.length > 2;
   const isFiltering = Object.values(filters).some((v) => v !== "");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isSuperAdmin = user.role === "super-admin";
+  const isSubAdmin = user.role === "sub-admin";
 
   // --- React Query Hooks ---
   const { data: customersData, isLoading: customersLoading, refetch: refetchCustomers } =
-    useCustomers(page, 20, sortBy, sortOrder);
+    useCustomers(page, 20, sortBy, sortOrder, subAdminIdParam);
 
-  const { data: statsData, isLoading: statsLoading, refetch: refetchStats } = useCustomerStats();
+  const { data: statsData, isLoading: statsLoading } = useCustomerStats();
   const { data: searchData } = useSearchCustomers(debouncedSearch, isSearching);
-  const { data: filterData } = useFilterCustomers(filters); // Always fetch filter data
+  const { data: filterData } = useFilterCustomers(filters);
 
   const deleteCustomerMutation = useDeleteCustomer();
 
@@ -66,6 +75,7 @@ const CustomerListPageOptimized = () => {
   }, [isSearching, isFiltering, customersData]);
 
   const handleDelete = async (id) => {
+    if (!isSuperAdmin) return;
     if (window.confirm("Are you sure you want to delete this customer?")) {
       try {
         await deleteCustomerMutation.mutateAsync(id);
@@ -74,6 +84,7 @@ const CustomerListPageOptimized = () => {
       }
     }
   };
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -96,53 +107,81 @@ const CustomerListPageOptimized = () => {
 
   return (
     <div className="container-fluid p-4">
-      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Customer Management</h2>
-        <button className="btn btn-outline-danger" onClick={handleLogout}>
-          <CiLogout /> Logout
-        </button>
+        <div>
+          <h2>Customer Management</h2>
+        </div>
+        <div className="d-flex gap-2">
+          {isSuperAdmin && (
+            <Link to="/admin/sub-admins" className="btn btn-primary">
+              Manage Sub-Admins
+            </Link>
+          )}
+        </div>
+
       </div>
 
+      {/* Dashboard Header with Add Customer Button */}
+      <div className="dashboard-header mb-4 p-4 bg-white rounded-4 shadow-sm border-0">
+        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <h2 className="fw-bold text-dark mb-1">
+              {isSubAdmin ? "Assigned Customers" : "Global Overview"}
+            </h2>
+            <p className="text-muted mb-0 ">
+              {isSubAdmin ? `Welcome back ${user.name}, ` : `Managing all platform records`}
+            </p>
+          </div>
+          <div className="d-flex gap-2">
+            <button
+              className={`btn ${showAddForm ? 'btn-danger' : 'btn-success'} d-flex align-items-center gap-2 px-4 shadow-sm fw-bold`}
+              onClick={() => setShowAddForm(!showAddForm)}
+            >
+              {showAddForm ? <FaTimes /> : <FaUserPlus />}
+              {showAddForm ? "Close Form" : "Add Customer"}
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      {/* Add Customer Form Overlay */}
+      {showAddForm && (
+        <CustomerRegisterPage onClose={() => setShowAddForm(false)} />
+      )}
+
       {/* Stats */}
-      <div className="mb-4">
-        <button className="btn btn-outline-primary mb-3" onClick={() => setShowStats(!showStats)}>
-          {showStats ? "Hide" : "Show"} Statistics
-        </button>
-        {showStats && (
-          <div className="row">
-            {statsLoading ? (
-              <StatsSkeleton count={4} />
-            ) : (
-              <>
-                <div className="col-md-3">
-                  <div style={statBoxStyle}>
-                    <h6 className="text-muted">Total Customers</h6>
-                    <h3 className="text-primary">{statsData?.data?.totalCustomers || 0}</h3>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div style={statBoxStyle}>
-                    <h6 className="text-muted">Approved</h6>
-                    <h3 className="text-success">{statsData?.data?.approvedCount || 0}</h3>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div style={statBoxStyle}>
-                    <h6 className="text-muted">Pending</h6>
-                    <h3 className="text-warning">{statsData?.data?.pendingCount || 0}</h3>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div style={statBoxStyle}>
-                    <h6 className="text-muted">Total Loan Amount</h6>
-                    <h3 className="text-info">
-                      ₹{statsData?.data?.totalLoanAmount?.toLocaleString() || 0}
-                    </h3>
-                  </div>
-                </div>
-              </>
-            )}
+      <div className="dashboard-stats mb-4">
+        {statsLoading ? (
+          <StatsSkeleton count={4} />
+        ) : (
+          <div className="row g-3">
+            <div className="col-md-3">
+              <div style={statBoxStyle}>
+                <h6 className="text-muted">{isSubAdmin ? "My Total" : "Total Customers"}</h6>
+                <h3 className="fw-bold">{statsData?.data?.totalCustomers || 0}</h3>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div style={statBoxStyle}>
+                <h6 className="text-muted">Approved</h6>
+                <h3 className="text-success">{statsData?.data?.approvedCount || 0}</h3>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div style={statBoxStyle}>
+                <h6 className="text-muted">Pending</h6>
+                <h3 className="text-warning">{statsData?.data?.pendingCount || 0}</h3>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div style={statBoxStyle}>
+                <h6 className="text-muted">Total Loan Amount</h6>
+                <h3 className="text-info">
+                  ₹{statsData?.data?.totalLoanAmount?.toLocaleString() || 0}
+                </h3>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -193,9 +232,9 @@ const CustomerListPageOptimized = () => {
                   onChange={(e) => setFilters({ ...filters, loantype: e.target.value })}
                 >
                   <option value="">All Loan Types</option>
-                  <option value="Home Loan">Home Loan</option>
-                  <option value="Personal Loan">Personal Loan</option>
-                  <option value="Business Loan">Business Loan</option>
+                  <option value="home">Home Loan</option>
+                  <option value="mortgage">Mortgage Loan</option>
+                  <option value="other">Other Loan</option>
                 </select>
               </div>
               <div className="col-md-2">
@@ -244,7 +283,7 @@ const CustomerListPageOptimized = () => {
                       <th onClick={() => handleSort("firstname")} style={{ cursor: "pointer" }}>
                         Name {sortBy === "firstname" && (sortOrder === "asc" ? "↑" : "↓")}
                       </th>
-                      <th>Email</th>
+                      <th className="d-none d-md-table-cell">Email</th>
                       <th>Phone</th>
                       <th>IFSC Code</th>
                       <th>Account No.</th>
@@ -255,6 +294,7 @@ const CustomerListPageOptimized = () => {
                       <th onClick={() => handleSort("status")} style={{ cursor: "pointer" }}>
                         Status {sortBy === "status" && (sortOrder === "asc" ? "↑" : "↓")}
                       </th>
+                      {isSuperAdmin && <th>Assigned To</th>}
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -262,29 +302,51 @@ const CustomerListPageOptimized = () => {
                     {displayData.map((customer) => (
                       <tr key={customer._id}>
                         <td>
-                          {customer.firstname} {customer.lastname}
+                          <div className="fw-bold">{customer.firstname} {customer.lastname}</div>
+                          <div className="small text-muted d-md-none">{customer.email}</div>
                         </td>
-                        <td>{customer.email}</td>
+                        <td className="d-none d-md-table-cell">{customer.email}</td>
                         <td>{customer.phone}</td>
                         <td>{customer.ifsccode}</td>
                         <td>{customer.accountnumber}</td>
                         <td>{customer.loantype}</td>
                         <td>₹{customer.loanamount?.toLocaleString()}</td>
                         <td>{renderStatusBadge(customer.status)}</td>
+                        {isSuperAdmin && (
+                          <td>
+                            <span className="badge bg-light text-dark border">
+                              {customer.subAdminId?.username || "Direct"}
+                            </span>
+                          </td>
+                        )}
                         <td>
-                          <Link
-                            to={`/profile/update/${customer._id}`}
-                            className="btn btn-sm btn-outline-primary me-2"
-                          >
-                            <FaEdit />
-                          </Link>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleDelete(customer._id)}
-                            disabled={deleteCustomerMutation.isPending}
-                          >
-                            {deleteCustomerMutation.isPending ? "..." : "Delete"}
-                          </button>
+                          <div className="d-flex gap-2">
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              onClick={() => navigate(`/profile/${customer._id}`)}
+                              title="View Details"
+                            >
+                              View
+                            </button>
+                            {isSuperAdmin && (
+                              <>
+                                <button
+                                  className="btn btn-sm btn-outline-warning"
+                                  onClick={() => navigate(`/profile/update/${customer._id}`)}
+                                  title="Edit"
+                                >
+                                  <FaEdit />
+                                </button>
+                                <button
+                                  className="btn btn-sm btn-outline-danger"
+                                  onClick={() => handleDelete(customer._id)}
+                                  title="Delete"
+                                >
+                                  <FaTrash />
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

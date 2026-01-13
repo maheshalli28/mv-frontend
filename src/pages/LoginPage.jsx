@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getCustomerProfile } from "../services/CustomerService";
-import { IoMdClose } from "react-icons/io";
-import { MdEmail, MdPhone } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import { loginCustomer } from "../services/CustomerService";
+import { MdEmail, MdPhone, MdLogin } from "react-icons/md";
+import { FaUserCircle } from "react-icons/fa";
 
 const LoginPage = () => {
-  const [form, setForm] = useState({ email: "", phone: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -17,15 +17,15 @@ const LoginPage = () => {
     setError("");
     setLoading(true);
     try {
-      const res = await getCustomerProfile(form.email, form.phone);
+      const res = await loginCustomer(form.email, form.password);
       if (res.data) {
-        localStorage.setItem("user", JSON.stringify({ role: "customer", id: res.data._id }));
-        navigate(`/profile/${res.data._id}`);
+        localStorage.setItem("user", JSON.stringify(res.data.customer));
+        localStorage.setItem("token", res.data.token);
+        navigate(`/profile/${res.data.customer.id}`);
       }
     } catch (err) {
-      setError("Invalid customer credentials");
-    }
-    finally {
+      setError(err.response?.data?.message || "Invalid credentials. Use your phone number as a temporary password.");
+    } finally {
       setLoading(false);
     }
   };
@@ -40,80 +40,113 @@ const LoginPage = () => {
       style={{
         position: "fixed",
         inset: 0,
-        backgroundColor: "rgba(0,0,0,0.7)",
+        backgroundColor: "rgba(10, 10, 10, 0.85)",
+        backdropFilter: "blur(10px)",
+        split: "fixed",
         zIndex: 1050,
-        padding: "1rem",
+        padding: "1.5rem",
       }}
     >
-      <div className="bg-white rounded-4 shadow p-4 position-relative" style={{ maxWidth: 420, width: "100%" }}>
-        {/* Close button */}
-        <button
-          type="button"
-          className="btn btn-link position-absolute top-0 end-0 mt-2 me-4"
-          onClick={handleClose}
-          aria-label="Close login form"
-          title="Close"
-          style={{ fontSize: "1.5rem", color: "#151616ff" }}
-        >
-          <IoMdClose />
-        </button>
+      <div
+        className="bg-white rounded-4 shadow-lg p-0 position-relative animate__animated animate__zoomIn"
+        style={{ maxWidth: 450, width: "100%", overflow: "hidden", border: "none" }}
+      >
+        {/* Banner Section */}
+        <div className="bg-warning p-4 text-center position-relative">
+          <button
+            type="button"
+            className="btn-close position-absolute top-0 end-0 m-3"
+            onClick={handleClose}
+            aria-label="Close"
+          ></button>
 
-        <h3 className="text-center mt-4 mb-4">Customer Login</h3>
-
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            {error}
+          <div
+            className="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm"
+            style={{ width: 70, height: 70 }}
+          >
+            <FaUserCircle size={45} className="text-warning" />
           </div>
-        )}
+          <h3 className="fw-bold text-dark mb-1">Customer Login</h3>
+          <p className="text-dark opacity-75 small mb-0">Track your financial journey</p>
+        </div>
 
-        <form onSubmit={handleLogin}>
-          {/* Email input with icon */}
-          <div className="input-group mb-3">
-            <span className="input-group-text bg-white">
-              <MdEmail />
-            </span>
-            <input
-              name="email"
-              type="email"
-              className="form-control"
-              placeholder="Email"
-              value={form.email}
-                onChange={handleChange}
-                disabled={loading}
-              required
-            />
-          </div>
+        {/* Form Body */}
+        <div className="p-4 p-md-5">
+          {error && (
+            <div className="alert alert-danger border-0 rounded-3 small py-2 text-center mb-4" role="alert">
+              {error}
+            </div>
+          )}
 
-          {/* Phone input with icon */}
-          <div className="input-group mb-3">
-            <span className="input-group-text bg-white">
-              <MdPhone />
-            </span>
-            <input
-              name="phone"
-              type="tel"
-              className="form-control"
-              placeholder="Phone"
-              value={form.phone}
-              onChange={handleChange}
+          <form onSubmit={handleLogin}>
+            <div className="mb-3">
+              <label className="form-label small fw-bold text-muted text-uppercase">Email Address</label>
+              <div className="input-group input-group-lg">
+                <span className="input-group-text bg-light border-0">
+                  <MdEmail className="text-muted" />
+                </span>
+                <input
+                  name="email"
+                  type="email"
+                  className="form-control bg-light border-0 fs-6 shadow-none"
+                  placeholder="your@email.com"
+                  value={form.email}
+                  onChange={handleChange}
+                  disabled={loading}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="form-label small fw-bold text-muted text-uppercase">Access Password</label>
+              <div className="input-group input-group-lg">
+                <span className="input-group-text bg-light border-0">
+                  <MdPhone className="text-muted" />
+                </span>
+                <input
+                  name="password"
+                  type="password"
+                  className="form-control bg-light border-0 fs-6 shadow-none"
+                  placeholder="Password or Phone"
+                  value={form.password}
+                  onChange={handleChange}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="text-end mt-2">
+                <Link to="/forgot-password" size="sm" className="text-decoration-none small fw-bold text-warning">
+                  Forgot Access Details?
+                </Link>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-warning btn-lg w-100 py-3 fw-bold rounded-3 shadow-sm transition-all d-flex align-items-center justify-content-center gap-2"
               disabled={loading}
-              required
-            />
-          </div>
-
-          <div className="text-center">
-            <button type="submit" className="btn btn-outline-dark w-auto" disabled={loading}>
+            >
               {loading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Logging in...
-                </>
+                <span className="spinner-border spinner-border-sm" role="status"></span>
               ) : (
-                'Login'
+                <>
+                  <MdLogin size={20} />
+                  Enter Account
+                </>
               )}
             </button>
+          </form>
+
+          <div className="text-center mt-4">
+            <p className="text-muted mb-0">
+              New to MV Associates?{" "}
+              <Link to="/register" className="text-warning fw-bold text-decoration-none">
+                Create your profile
+              </Link>
+            </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

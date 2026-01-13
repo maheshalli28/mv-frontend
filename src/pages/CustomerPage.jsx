@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { GiCash } from "react-icons/gi";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const CustomerPage = () => {
   const { id } = useParams();
@@ -21,6 +22,10 @@ const CustomerPage = () => {
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const handleBack = () => {
+    navigate("/customers");
+  };
 
   useEffect(() => {
     async function fetchCustomer() {
@@ -36,7 +41,9 @@ const CustomerPage = () => {
     fetchCustomer();
   }, [id]);
 
+
   const getStatusColor = (status) => {
+
     switch (status?.toLowerCase()) {
       case "approved":
         return "text-success";
@@ -55,6 +62,12 @@ const CustomerPage = () => {
     <div className="container py-4" style={{ minHeight: "auto" }}>
       <div className="row justify-content-center">
         <div className="col-12 col-md-8 col-lg-6">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <button className="btn btn-outline-secondary d-flex align-items-center gap-2" onClick={handleBack}>
+              <IoMdArrowRoundBack /> Back
+            </button>
+            <h2 className="fw-bold text-dark mb-0">Customer Profile</h2>
+          </div>
           <div
             style={{
               background: "#fff",
@@ -113,6 +126,11 @@ const CustomerPage = () => {
               <span className="fw-bold">Status:</span>{" "}
               <span className={getStatusColor(customer.status)} style={{ fontWeight: 600 }}>
                 {customer.status}
+              </span>
+            </div>
+            <div className="mb-3">
+              <span className={getStatusColor(customer.pendingMessage)} style={{ fontWeight: 500 }}>
+                {customer.pendingMessage}
               </span>
             </div>
 

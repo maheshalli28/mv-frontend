@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-
-const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5001";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaUserShield, FaUserTie, FaLock, FaEnvelope, FaEye, FaEyeSlash, FaArrowLeft } from "react-icons/fa";
+import { useSuperAdminLogin } from "../services/SuperAdminService";
+import { useSubAdminLogin } from "../services/SubAdminService";
 
 const AdminLoginPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const initialRole = location.state?.initialRole || "admin";
+
   const [form, setForm] = useState({ email: "", password: "" });
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // 👁️ State for visibility toggle
+  const [message, setMessage] = useState({ text: "", type: "" });
+  const superAdminLogin = useSuperAdminLogin();
+  const subAdminLogin = useSubAdminLogin();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,143 +25,167 @@ const AdminLoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
+    setMessage({ text: "", type: "" });
+    const loginMutation = initialRole === "super-admin" ? superAdminLogin : subAdminLogin;
+
     try {
-      const res = await axios.post(`${BASE_URL}/api/admin/login`, form);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ ...res.data.admin, token: res.data.token, role: "admin" })
-      );
-      setMessage("Login successful");
-      window.location.href = "/admin/dashboard";
+      const res = await loginMutation.mutateAsync(form);
+      const userData = { ...res.data.admin, token: res.data.token };
+
+      console.log("Admin session initiated:", userData.username, "| Role:", userData.role);
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", res.data.token);
+
+      setMessage({ text: "Login successful! Redirecting...", type: "success" });
+
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+      }, 1000);
     } catch (err) {
-      setMessage(err.response?.data?.message || "Login failed");
+      console.error("Login failed:", err);
+      setMessage({
+        text: err.response?.data?.message || "Invalid credentials. Please try again.",
+        type: "danger"
+      });
     }
-    setLoading(false);
   };
 
   return (
-    <>
+    <div
+      className="admin-login-wrapper"
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        padding: "20px"
+      }}
+    >
       <div
-        className="admin-login"
+        className="login-card shadow-lg"
         style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%)",
+          background: "#fff",
+          borderRadius: "24px",
+          overflow: "hidden",
+          maxWidth: "450px",
+          width: "100%",
+          border: "none"
         }}
       >
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: "16px",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-            padding: "2.5rem 2rem",
-            maxWidth: 400,
-            width: "100%",
-          }}
-        >
-          <h2 className="text-center mb-4" style={{ color: "#1976d2" }}>
-            Admin Login
+        {/* Header Section */}
+        <div className="p-5 text-center bg-primary text-white position-relative">
+          <Link to="/" className="position-absolute top-0 start-0 m-4 text-white opacity-75 hover-opacity-100">
+            <FaArrowLeft />
+          </Link>
+          <div
+            className="icon-circle mb-3 mx-auto shadow-sm"
+            style={{
+              width: "80px",
+              height: "80px",
+              background: "rgba(255,255,255,0.2)",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "32px"
+            }}
+          >
+            {initialRole === "super-admin" ? <FaUserShield /> : <FaUserTie />}
+          </div>
+          <h2 className="fw-bold mb-1">
+            {initialRole === "super-admin" ? "Super Admin" : "Sub-Admin"}
           </h2>
+          <p className="opacity-75 mb-0">Secure Portal Login</p>
+        </div>
 
-          <form onSubmit={handleSubmit} className="mb-3">
-            {/* Email Field */}
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              style={{
-                marginBottom: 16,
-                width: "100%",
-                padding: "0.75rem",
-                borderRadius: 8,
-                border: "1px solid #ccc",
-              }}
-            />
+        {/* Form Section */}
+        <div className="p-5">
+          {message.text && (
+            <div className={`alert alert-${message.type} border-0 shadow-sm mb-4 text-center rounded-3`}>
+              {message.text}
+            </div>
+          )}
 
-            {/* Password Field with toggle */}
-            <div style={{ position: "relative" }}>
-              <input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                style={{
-                  marginBottom: 16,
-                  width: "100%",
-                  padding: "0.75rem 2.5rem 0.75rem 0.75rem",
-                  borderRadius: 8,
-                  border: "1px solid #ccc",
-                }}
-              />
-
-              {/* 👁️ Eye Icon */}
-              <span
-                onClick={togglePasswordVisibility}
-                style={{
-                  position: "absolute",
-                  right: 12,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  cursor: "pointer",
-                  color: "#666",
-                }}
-              >
-                
-              </span>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label className="form-label fw-bold small text-muted text-uppercase">Email Address</label>
+              <div className="input-group input-group-lg">
+                <span className="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                  <FaEnvelope />
+                </span>
+                <input
+                  name="email"
+                  type="email"
+                  className="form-control bg-light border-start-0 rounded-end-3 fs-6 shadow-none"
+                  placeholder="admin@example.com"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
 
-            {/* Submit Button */}
+            <div className="mb-4">
+              <label className="form-label fw-bold small text-muted text-uppercase">Password</label>
+              <div className="input-group input-group-lg">
+                <span className="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                  <FaLock />
+                </span>
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  className="form-control bg-light border-start-0 fs-6 shadow-none"
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                />
+                <span
+                  className="input-group-text bg-light border-start-0 rounded-end-3 text-muted cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                  style={{ cursor: "pointer" }}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+              <div className="text-end mt-2">
+                <Link to="/admin/forgot-password" state={{ initialRole }} size="sm" className="text-decoration-none small fw-bold">
+                  Forgot Password?
+                </Link>
+              </div>
+            </div>
+
             <button
               type="submit"
-              disabled={loading}
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                borderRadius: 8,
-                background: "#1976d2",
-                color: "#fff",
-                border: "none",
-                fontWeight: 600,
-              }}
+              disabled={superAdminLogin.isPending || subAdminLogin.isPending}
+              className="btn btn-primary btn-lg w-100 rounded-3 py-3 fw-bold shadow-sm transition-all"
             >
-              {loading ? "Logging in..." : "Login"}
+              {superAdminLogin.isPending || subAdminLogin.isPending ? (
+                <span className="spinner-border spinner-border-sm me-2"></span>
+              ) : "Sign In to Dashboard"}
             </button>
           </form>
 
-          <div className="d-flex justify-content-center align-items-center mb-2 text-center">
-            <Link
-              to="/admin/forgot-password"
-              style={{ color: "#1976d2", fontWeight: 500 }}
-              className="text-center"
-            >
-              Forgot Password?
-            </Link>
+          <div className="text-center mt-5">
+            {/* <Link to="/admin/register" className="text-decoration-none small fw-bold text-primary">
+              Don't have an account? Sign Up
+            </Link> */}
+            <p className="text-muted small mb-0 mt-3">
+              By signing in, you agree to our Terms of Service.
+            </p>
           </div>
-
-          <button
-            type="button"
-            className="btn btn-outline-secondary w-100 mt-2"
-            style={{ borderRadius: 8 }}
-            onClick={() => (window.location.href = "/")}
-          >
-            Cancel
-          </button>
-
-          {message && (
-            <div className="alert alert-info mt-3 text-center">{message}</div>
-          )}
         </div>
       </div>
-    </>
+      <style>{`
+                .cursor-pointer { cursor: pointer; }
+                .hover-opacity-100:hover { opacity: 1 !important; transition: opacity 0.3s; }
+                .login-card { transition: transform 0.3s; }
+                .login-card:hover { transform: translateY(-5px); }
+                .input-group-text { border: 1px solid #ced4da; }
+                .form-control:focus + .input-group-text { border-color: #86b7fe; }
+            `}</style>
+    </div>
   );
 };
 

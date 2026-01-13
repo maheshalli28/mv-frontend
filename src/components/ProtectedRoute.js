@@ -6,8 +6,9 @@ import { getCurrentUser } from "../utils/auth";
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const user = getCurrentUser();
   if (!user) {
-    // If admin route, redirect to admin login
-    if (allowedRoles.includes("admin")) {
+    // If route requires an admin role, redirect to admin login
+    const requiresAdmin = allowedRoles.some(role => ["super-admin", "sub-admin"].includes(role));
+    if (requiresAdmin) {
       return <Navigate to="/admin/login" />;
     }
     // Otherwise, redirect to customer login
