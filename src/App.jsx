@@ -1,6 +1,6 @@
 // App.jsx
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import PortfolioNavbar from "./components/Navbar";
@@ -25,13 +25,16 @@ const FeaturesSection = lazy(() => import("./components/FeatureSection"));
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const CustomerRegisterPage = lazy(() => import("./pages/CustomerRegisterPage"));
-const CustomerListPage = lazy(() => import("./pages/CustomerListPage"));
+const CustomerListPage = lazy(() => import("./pages/CustomerListPageOptimized"));
 const CustomerProfilePage = lazy(() => import("./pages/CustomerProfilePage"));
 const CustomerPage = lazy(() => import("./pages/CustomerPage"));
 const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 const AdminLoginPage = lazy(() => import("./pages/AdminLoginPage"));
 const AdminRegisterPage = lazy(() => import("./pages/AdminRegisterPage"));
 const AdminForgotPasswordPage = lazy(() => import("./pages/AdminForgotPasswordPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const AdminManagementPage = lazy(() => import("./pages/SubAdminManagementPage"));
+const CreateSuperAdminPage = lazy(() => import("./pages/CreateSuperAdminPage"));
 
 // ✅ LandingPageLayout with conditional overlays
 function LandingPageLayout() {
@@ -42,13 +45,13 @@ function LandingPageLayout() {
   return (
     <>
       <Suspense fallback={
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="text-center">
-        <div className="spinner-border text-primary" role="status"></div>
-        <div className="mt-2">Loading...</div>
-      </div>
-    </div>
-  }>
+        <div className="d-flex justify-content-center align-items-center vh-100">
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status"></div>
+            <div className="mt-2">Loading...</div>
+          </div>
+        </div>
+      }>
         <PortfolioNavbar />
         <section id="home"><HomeSection /></section>
         <section id="services"><Services /></section>
@@ -78,21 +81,44 @@ function App() {
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin/register" element={<AdminRegisterPage />} />
         <Route path="/admin/forgot-password" element={<AdminForgotPasswordPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* 🔐 Admin Routes */}
         <Route
-          path="/admin"
+          path="/admin/dashboard"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["super-admin", "sub-admin"]}>
               <PortfolioNavbar />
               <CustomerListPage />
-           </ProtectedRoute>
+            </ProtectedRoute>
           }
+        />
+        <Route
+          path="/admin/create-super-admin"
+          element={
+            <ProtectedRoute allowedRoles={["super-admin"]}>
+              <PortfolioNavbar />
+              <CreateSuperAdminPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/sub-admins"
+          element={
+            <ProtectedRoute allowedRoles={["super-admin"]}>
+              <PortfolioNavbar />
+              <AdminManagementPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={<Navigate to="/admin/dashboard" />}
         />
         <Route
           path="/profile/update/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["super-admin"]}>
               <PortfolioNavbar />
               <CustomerProfilePage />
               <Footer />
@@ -104,7 +130,7 @@ function App() {
         <Route
           path="/profile/:id"
           element={
-            <ProtectedRoute allowedRoles={["customer"]}>
+            <ProtectedRoute allowedRoles={["customer", "super-admin", "sub-admin"]}>
               <CustomerPage />
               <Footer />
             </ProtectedRoute>

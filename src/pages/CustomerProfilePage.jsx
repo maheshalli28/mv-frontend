@@ -266,6 +266,27 @@ const CustomerProfilePage = () => {
                 </div>
               </div>
 
+              {/* Pending Message - Only show when status is pending */}
+              {form.status === "pending" && (
+                <div className="row mb-4 align-items-start">
+                  <label className="col-sm-4 col-form-label">Pending Message</label>
+                  <div className="col-sm-8">
+                    <select
+                      className="form-select"
+                      name="pendingMessage"
+                      value={form.pendingMessage || ""}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select reason for pending...</option>
+                      <option value="legal">Legal</option>
+                      <option value="technical">Technical</option>
+                      <option value="credit">Credit</option>
+                      <option value="others">Others</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+
               {/* Rejection Message - Only show when status is rejected */}
               {form.status === "rejected" && (
                 <div className="row mb-4 align-items-start">

@@ -1,12 +1,7 @@
 import axios from "axios";
 import { getToken } from "../utils/auth";
 
-// Prefer environment variable in production; fallback to known Render URL for safety
-const RENDER_BACKEND = "https://mv-backend-apz8.onrender.com";
-
-const baseURL = process.env.NODE_ENV === "production"
-  ? (process.env.REACT_APP_API_URL || RENDER_BACKEND || "http://localhost:5001")
-  : "/api"; // dev proxy (CRA)
+const baseURL = "https://mv-backend-apz8.onrender.com";
 
 const API = axios.create({ baseURL });
 

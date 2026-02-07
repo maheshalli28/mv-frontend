@@ -233,7 +233,7 @@ const CustomerListPage = () => {
           <CiLogout size={22} />
         </button>
 
-        
+
 
         <div className="d-flex gap-2 align-items-center">
           {lastUpdated && <small className="text-muted me-2">Last updated: {lastUpdated.toLocaleTimeString()}</small>}
@@ -358,12 +358,12 @@ const CustomerListPage = () => {
                 <div className="stat-value" style={{ color: item.color }}>
                   {item.value}
                 </div>
-              </div>       
+              </div>
             ))}
           </div>
           <StatsPanel customers={customers} overallStats={stats} />
-         </> 
-        )}
+        </>
+      )}
 
 
       {/* Customer Table */}
@@ -424,7 +424,7 @@ const CustomerListPage = () => {
                           </Link>
                         </td>
                         <td className="no-print text-center">
-                          <button className="btn btn-sm text-danger" onClick={() => promptDelete(c._id, `${c.firstname} ${c.lastname}`)}><MdDeleteForever size={18}/></button>
+                          <button className="btn btn-sm text-danger" onClick={() => promptDelete(c._id, `${c.firstname} ${c.lastname}`)}><MdDeleteForever size={18} /></button>
                         </td>
                       </tr>
                     ))

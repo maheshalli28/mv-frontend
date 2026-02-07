@@ -31,14 +31,18 @@ export const TableSkeleton = ({ rows = 10, columns = 6 }) => (
 
 // Skeleton for stats cards
 export const StatsSkeleton = ({ count = 4 }) => (
-  <div className="row">
+  <div className="row g-3">
     {[...Array(count)].map((_, i) => (
-      <div key={i} className="col-md-3 mb-3">
-        <div className="card">
-          <div className="card-body text-center">
-            <div className="skeleton skeleton-text" style={{ height: '24px', width: '60%', margin: '0 auto 10px' }}></div>
-            <div className="skeleton skeleton-text" style={{ height: '32px', width: '40%', margin: '0 auto' }}></div>
-          </div>
+      <div key={i} className="col-md-3">
+        <div style={{
+          background: "#fff",
+          borderRadius: 12,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+          padding: "1.5rem 1rem",
+          textAlign: "center"
+        }}>
+          <div className="skeleton skeleton-text" style={{ height: '16px', width: '60%', margin: '0 auto 15px', borderRadius: '4px' }}></div>
+          <div className="skeleton skeleton-text" style={{ height: '32px', width: '45%', margin: '0 auto', borderRadius: '4px' }}></div>
         </div>
       </div>
     ))}
@@ -69,8 +73,8 @@ export const ProfileSkeleton = () => (
 
 // Generic skeleton component
 export const Skeleton = ({ width = '100%', height = '20px', className = '' }) => (
-  <div 
-    className={`skeleton ${className}`} 
+  <div
+    className={`skeleton ${className}`}
     style={{ width, height }}
   ></div>
 );
@@ -102,8 +106,8 @@ export const ErrorMessage = ({ message = 'Something went wrong', onRetry }) => (
       <strong>Error:</strong> {message}
     </div>
     {onRetry && (
-      <button 
-        className="btn btn-outline-danger btn-sm ms-3" 
+      <button
+        className="btn btn-outline-danger btn-sm ms-3"
         onClick={onRetry}
       >
         Retry

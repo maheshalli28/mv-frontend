@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import API from "./api";
 
 // --- Raw API Functions ---
-const getAllCustomersAPI = (page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc') =>
-  API.get(`/api/customers/all?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`);
+const getAllCustomersAPI = (page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc', subAdminId = '') =>
+  API.get(`/api/customers/all?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}${subAdminId ? `&subAdminId=${subAdminId}` : ''}`);
 
 const searchCustomersAPI = (q) => API.get(`/api/customers/search`, { params: { q } });
 
@@ -16,14 +16,15 @@ const registerCustomerAPI = (data) => API.post(`/api/customers/register`, data);
 const deleteCustomerAPI = (id) => API.delete(`/api/customers/delete/${id}`);
 
 const getCustomerStatsAPI = () => API.get(`/api/customers/stats`);
+const customerForgotPasswordAPI = (data) => API.post(`/api/customers/forgot-password`, data);
 
 // --- React Query Hooks ---
 
 // 1️⃣ Fetch all customers initially with pagination & sorting
-export const useCustomers = (page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc') => {
+export const useCustomers = (page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc', subAdminId = '') => {
   return useQuery({
-    queryKey: ['customers', page, limit, sortBy, sortOrder],
-    queryFn: () => getAllCustomersAPI(page, limit, sortBy, sortOrder),
+    queryKey: ['customers', page, limit, sortBy, sortOrder, subAdminId],
+    queryFn: () => getAllCustomersAPI(page, limit, sortBy, sortOrder, subAdminId),
     keepPreviousData: true,
     staleTime: 2 * 60 * 1000,
   });
@@ -93,6 +94,12 @@ export const useRegisterCustomer = () => {
   });
 };
 
+export const useCustomerForgotPassword = () => {
+  return useMutation({
+    mutationFn: customerForgotPasswordAPI,
+  });
+};
+
 
 // --- Legacy API Functions (for backward compatibility) ---
 export const getAllCustomers = () => API.get(`/api/customers/all`);
@@ -100,6 +107,7 @@ export const searchCustomers = (q) => API.get(`/api/customers/search`, { params:
 export const filterCustomers = (params) => API.get(`/api/customers/filter`, { params });
 export const getCustomerProfileById = (id) => API.get(`/api/customers/${id}`);
 export const updateCustomer = (id, data) => API.put(`/api/customers/update/${id}`, data);
+export const loginCustomer = (email, password) => API.post(`/api/customers/login`, { email, password });
 export const getCustomerProfile = (email, phone) =>
   API.get(`/api/customers/profile`, { params: { email, phone } });
 export const registerCustomer = (data) => API.post(`/api/customers/register`, data);
