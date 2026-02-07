@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaSearch, FaFilter, FaEdit, FaChevronLeft, FaChevronRight, FaUserPlus, FaTimes, FaUserTie, FaTrash } from "react-icons/fa";
-import { CiLogout } from "react-icons/ci";
+import { FaSearch, FaFilter, FaEdit, FaChevronLeft, FaChevronRight, FaUserPlus, FaTimes, FaTrash } from "react-icons/fa";
 import {
   useCustomers,
   useCustomerStats,
@@ -86,10 +85,10 @@ const CustomerListPageOptimized = () => {
   };
 
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   navigate("/");
+  // };
 
   const renderStatusBadge = (status) => {
     const statusColors = { approved: "success", pending: "warning", rejected: "danger" };
